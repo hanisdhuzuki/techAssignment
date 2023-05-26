@@ -6,42 +6,56 @@
 
 using namespace std;
 
+bool isPalindromeWithTrash(string inputString, string trashSymbolsString) {
+    transform(inputString.begin(), inputString.end(), inputString.begin(), ::tolower);     // Convert inputString to lowercase.
+    size_t start = 0;
+    size_t end = inputString.length() - 1;
+
+    while (start < end) {
+        char startChar = inputString[start];
+        char endChar = inputString[end];
+
+        // If startChar is a trash symbol, move the start pointer forward.
+        if (trashSymbolsString.find(startChar) != string::npos) {
+            start++;
+            continue;
+        }
+
+        // If endChar is a trash symbol, move the end pointer backward.
+        if (trashSymbolsString.find(endChar) != string::npos) {
+            end--;
+            continue;
+        }
+
+        // If startChar and endChar are different, =!palindrome.
+        if (startChar != endChar) {
+            return false;
+        }
+
+        // Move both pointers inward.
+        start++;
+        end--;
+    }
+
+    // If all characters checked and no mismatch found = palindrome.
+    return true;
+}
+
 int main() {
     string inputString;
     string trashSymbolsString;
 
-    cout << "InputString: ";
+    cout << "InputString: ";    // Get inputString.
     getline(cin, inputString);
 
-    cout << "TrashSymbolsString: ";
+    cout << "TrashSymbolsString: "; // Get trashSymbolsString.
     getline(cin, trashSymbolsString);
 
-    // string to lowercase, avoid case-sensitive strings.
-    transform(inputString.begin(), inputString.end(), inputString.begin(), ::tolower);
+    // Check if inputString = isPalindrome with ignored trash symbols.
+    bool isPalindrome = isPalindromeWithTrash(inputString, trashSymbolsString);
 
-    // Temp comparison string.
-    string temp = "";
-
-    // If any trash, present,
-    // it will not be added to the temporary string.
-    for (size_t i = 0; i < inputString.length(); i++) {
-        char c = inputString[i];
-        if (trashSymbolsString.find(c) != string::npos) { //npos absent element.
-            continue;
-        } else {
-            temp += c; // store input after remove trash.
-        }
-    }
-
-    // check palindrome after removing trash.
-    string reversedTemp = temp;
-    reverse(reversedTemp.begin(), reversedTemp.end());
-    if (temp == reversedTemp) {
-        cout << "true" << endl;
-    } else {
-        cout << "false" << endl;
-    }
+    // Output the result as either "true" or "false"
+    cout << (isPalindrome ? "true" : "false") << endl;
 
     return 0;
 }
-
